@@ -1,4 +1,7 @@
-" vim: set foldmarker={,} foldlevel=0 foldmethod=marker spell:
+" Note that this vimrc goes to some effort to be something that can just
+" be pasted into a random terminal and work successfully, without any plugins
+" needing to be present.
+"
 " Neovim defaults
 " {{{
 if !has('nvim')
@@ -79,21 +82,6 @@ set smartcase               " ... but case sensitive when uc present
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 " }}}
 
-" ----- Colors -----
-" {{{
-set background=dark                     " Dark background
-silent! colors desert                   " Sane default on base systems
-" With true black background
-hi NonText ctermbg=black guibg=black
-hi Normal ctermbg=black guibg=black
-silent! colors jellybean                " Preferred colorscheme
-" Suppress highlighting
-hi CursorLine gui=NONE cterm=NONE guibg=NONE ctermbg=NONE
-" Grey line numbers, but yellow when highlighted
-hi LineNr cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
-hi CursorLineNR cterm=NONE ctermfg=yellow gui=NONE guifg=yellow
-" }}}
-
 " ----- Mappings -----
 " {{{
 " Map Y to act like D and C, i.e. to yank until EOL, rather than act as yy,
@@ -109,6 +97,38 @@ nnoremap j gj
 nnoremap k gk
 " }}}
 
+" ----- Plugins -----
+" {{{
+if !empty(glob('~/.vim/autoload/plug.vim'))
+    call plug#begin('~/.vim/plugged')
+    Plug 'ciaranm/securemodelines'      " Restore our disabled modelines
+    Plug 'itchyny/lightline.vim'
+    Plug 'itchyny/vim-gitbranch'
+    " Colorschemes
+    Plug 'tpope/vim-vividchalk'         " Old favorite
+    Plug 'NLKNguyen/papercolor-theme'   " And a couple new ones I'm trying
+    Plug 'fenetikm/falcon'
+    Plug 'sickill/vim-sunburst'
+    Plug 'vim-scripts/JellyX'
+    Plug 'toupeira/vim-desertink'
+    Plug 'lucasprag/simpleblack'
+    call plug#end()
+endif
+if !empty(glob('~/.vim/plugged/lightline.vim'))
+    set noshowmode                      " Lightline will do this for us
+    let g:lightline = {
+      \ 'colorscheme': 'simpleblack',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'filename', 'gitbranch', 'readonly', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'gitbranch#name'
+      \ },
+      \ }
+endif
+" }}}
+
 " ----- Leadermappings ----
 " {{{
 " One from Steve Losh: strip all trailing whitespace
@@ -120,3 +140,22 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 " }}}
+
+" ----- Colors -----
+" {{{
+" Note that we are putting colors *after* Plugins to allow us to load
+" colorschemes via vim-plugin.
+set background=dark                     " Dark background
+silent! colors desert                   " Sane default on base systems
+" With true black background
+hi NonText ctermbg=black guibg=black
+hi Normal ctermbg=black guibg=black
+silent! colors simpleblack
+" Suppress highlighting
+hi CursorLine gui=NONE cterm=NONE guibg=NONE ctermbg=NONE
+" Grey line numbers, but yellow when highlighted
+hi LineNr cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
+hi CursorLineNR cterm=NONE ctermfg=yellow gui=NONE guifg=yellow
+" }}}
+
+" vim: set foldmarker={,} foldlevel=0 foldmethod=marker spell:
