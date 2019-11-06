@@ -73,6 +73,14 @@ set softtabstop=4           " N spaces inserted/removed in editing
 set shiftwidth=4            " match tabstop
 " }}}
 
+" ----- Swap and Backup -----
+" {{{
+" Back up to .vim/, using full paths to avoid collision.
+set backupdir=~/.vim/backup//,.,/tmp//
+set directory=~/.vim/swp//,.,/tmp//
+set undodir=~/.vim/undo//,.,/tmp//
+" }}}
+
 " ----- Search and Replace -----
 " {{{
 set gdefault                " Regexes use g by default (add g to disable)
