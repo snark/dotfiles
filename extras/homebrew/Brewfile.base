@@ -1,0 +1,74 @@
+# Note that this Brewfile presumes that Homebrew and the command-line Xcode
+# tools have already been installed.
+#
+# This is a setup for something like a new work computer; things that I expect to
+# use for work on at least a semi-regular basis with a pleasant developer
+# environment. It doesn't have any games, dev tools for personal projects,
+# media players, etc.
+#
+# USAGE: brew bundle --file=./Brewfile.base 
+cask_args appdir: '/Applications'
+
+tap "homebrew/cask-fonts"
+
+# Core
+brew "openssl"
+brew "bash"                 # More recent than base Mac install
+brew "zsh"                  # More recent than base Mac install
+brew "git"                  # More recent than base Mac install
+brew "curl"                 # More recent than base Mac install
+brew "stow"                 # For setting up dotfiles
+brew "mas"                  # Manage App Store downloads via Brew
+
+# Quality of life
+cask "alfred"               # Keyboard-driven Swiss Army knife; free with paid plugin
+cask "bettertouchtool"      # Utility for making the touchbar useful; paid
+cask "iterm2"               # Base terminal application
+cask "jumpcut"              # Minimalist clipboard manager
+cask "karabiner-elements"   # Remap caps lock; note that this will require root access
+                            # and a security panel override for installation
+cask "nvalt"                # All-purpose notebook app
+
+# Text editors
+brew "vim"                  # Get a modern vim
+brew "neovim"               # A highly compatible modern vim with baked-in Python support
+cask "macvim"               # GUI vim
+
+# Languages
+brew "node"
+brew "nvm"
+brew "python3"
+
+# Fonts
+cask "font-bitstream-vera"  # My long-time favorite
+cask "font-hack"            # Expanded glyph set in the Bitstream Vera family
+
+# Selection of additional dev/cli tools
+brew "awscli"               # Amazon Web Service tools
+brew "bat"                  # syntax-aware cat
+brew "fzf"                  # fuzzy-finder
+brew "jq"                   # json manipulator
+brew "ripgrep"              # ack with superpowers
+brew "tmux"                 # screen sessions
+brew "wget"                 # convenience downloader
+
+# Databases
+brew "mysql"
+brew "postgres"
+brew "sqlite3"
+
+# Additional applications
+cask "1password"            # Modern passwords
+cask "1password-cli"
+cask "acorn"                # Intermediate-level graphic editor; paid
+cask "docker"               # Containers rule everything around me
+cask "macpass"              # Legacy passwords
+cask "slack"                # Office chit-chat
+cask "the-unarchiver"       # Just a handy OSX utility
+cask "tunnelblick"          # VPNs
+cask "zoomus"               # Videoconferencing software
+
+# App Store only
+mas "Amphetamine 4", id: 937984704  # Like Caffeine but better: rules-based
+                                    # controls to keep your computer from
+                                    # going to sleep.
