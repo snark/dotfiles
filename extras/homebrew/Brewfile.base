@@ -10,6 +10,7 @@
 cask_args appdir: '/Applications'
 
 tap "homebrew/cask-fonts"
+tap "filippo.io/age", "https://filippo.io/age"
 
 # Core
 brew "openssl"
@@ -45,10 +46,12 @@ cask "font-bitstream-vera"  # My long-time favorite
 cask "font-hack"            # Expanded glyph set in the Bitstream Vera family
 
 # Selection of additional dev/cli tools
+brew "age"                  # Modern file encryption (GPG replacement)
 brew "awscli"               # Amazon Web Service tools
 brew "bat"                  # syntax-aware cat
 brew "fzf"                  # fuzzy-finder
 brew "jq"                   # json manipulator
+brew "magic-wormhole"       # move files around easily
 brew "ripgrep"              # ack with superpowers
 brew "tmux"                 # screen sessions
 brew "wget"                 # convenience downloader
