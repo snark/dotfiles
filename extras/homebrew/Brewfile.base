@@ -65,6 +65,7 @@ brew "sqlite3"
 cask "1password"            # Modern passwords
 cask "1password-cli"
 cask "acorn"                # Intermediate-level graphic editor; paid
+cask "authy"                # 2FA for desktop (and phone)
 cask "docker"               # Containers rule everything around me
 cask "dozer"                # Open-source menu bar neatener
 cask "macpass"              # Legacy passwords
