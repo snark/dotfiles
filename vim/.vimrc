@@ -110,19 +110,27 @@ nnoremap k gk
 if !empty(glob('~/.vim/autoload/plug.vim'))
     call plug#begin('~/.vim/plugged')
     Plug 'ciaranm/securemodelines'      " Restore our disabled modelines
-    Plug 'itchyny/lightline.vim'
-    Plug 'itchyny/vim-gitbranch'
+    Plug 'itchyny/lightline.vim'        " Airline or powerline, written in vimscript
+    Plug 'itchyny/vim-gitbranch'        " Feeds lightline branch info
+    Plug 'mbbill/undotree'              " TUI undo tree visualizer
+    Plug 'tpope/vim-surround'           " Adds 's' movement key
+    Plug 'tpope/vim-repeat'             " Makes '.' accessible to plugin mappings
+    if !empty(glob('/usr/local/opt/fzf'))
+        Plug '/usr/local/opt/fzf'       " Fuzzy-finder (default Homebrew install location)
+        Plug 'junegunn/fzf.vim'         " ...and its vim interface
+    endif
     " Colorschemes
     Plug 'tpope/vim-vividchalk'         " Old favorite
     Plug 'NLKNguyen/papercolor-theme'   " And a couple new ones I'm trying
+    Plug 'lucasprag/simpleblack'        " Current favorite
     Plug 'fenetikm/falcon'
     Plug 'sickill/vim-sunburst'
-    Plug 'vim-scripts/JellyX'
-    Plug 'toupeira/vim-desertink'
-    Plug 'lucasprag/simpleblack'
     call plug#end()
 endif
+
+" Some configuration for our plugins, assuming they've been installed
 if !empty(glob('~/.vim/plugged/lightline.vim'))
+    set noshowmode                      " Lightline will do this for us
     set noshowmode                      " Lightline will do this for us
     let g:lightline = {
       \ 'colorscheme': 'simpleblack',
@@ -135,12 +143,17 @@ if !empty(glob('~/.vim/plugged/lightline.vim'))
       \ },
       \ }
 endif
+if !empty(glob('~/.vim/plugged/undotree'))
+    nnoremap <C-S-U> :UndotreeToggle<CR>
+endif
 " }}}
 
 " ----- Leadermappings ----
 " {{{
 " One from Steve Losh: strip all trailing whitespace
 nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<CR>
+" Turn colorcolumn on and off
+nnoremap <silent> <leader>c :execute "set colorcolumn=" . (&colorcolumn == "" ? "80" : "")<CR>
 " And some handy vertical split controls, also from Steve Losh
 nnoremap <leader>w <C-w>v<C-w>l     " ,w opens vertical split and switches to it
 nnoremap <C-h> <C-w>h               " Control-<vim navigation> to navigate split windows
@@ -164,6 +177,35 @@ hi CursorLine gui=NONE cterm=NONE guibg=NONE ctermbg=NONE
 " Grey line numbers, but yellow when highlighted
 hi LineNr cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 hi CursorLineNR cterm=NONE ctermfg=yellow gui=NONE guifg=yellow
+if !empty(glob('~/.vim/plugged/fzf.vim'))
+" Customize fzf colors to match your color scheme
+    let g:fzf_colors =
+  \ { 'fg':    ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+endif
 " }}}
+
+" ----- Miscellaneous -----
+"{{{
+" Fixes an issue specifically with editing crontabs on OSX:
+" https://superuser.com/questions/359580/error-adding-cronjobs-in-mac-os-x-lion/907889#907889
+autocmd filetype crontab setlocal nobackup nowritebackup 
+" Don't display the intro message on startup
+set shortmess+=I
+" Improve responsiveness for use of escape key
+set ttimeout
+set ttimeoutlen=20
+"}}}
 
 " vim: set foldmarker={,} foldlevel=0 foldmethod=marker spell:
