@@ -8,4 +8,5 @@ Contains:
 * `git`
 * `karabiner`
 * `neovim`
+* `tmux`
 * `vim`
