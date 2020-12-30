@@ -115,8 +115,11 @@ if !empty(glob('~/.vim/autoload/plug.vim'))
     Plug 'mbbill/undotree'              " TUI undo tree visualizer
     Plug 'tpope/vim-surround'           " Adds 's' movement key
     Plug 'tpope/vim-repeat'             " Makes '.' accessible to plugin mappings
-    if !empty(glob('/usr/local/opt/fzf'))
-        Plug '/usr/local/opt/fzf'       " Fuzzy-finder (default Homebrew install location)
+    if !empty(glob('/opt/homebrew/bin/fzf'))
+        Plug '/opt/homebrew/opt/fzf'       " Fuzzy-finder (default Homebrew install location, M1)
+        Plug 'junegunn/fzf.vim'         " ...and its vim interface
+    elseif !empty(glob('/usr/local/opt/fzf'))
+        Plug '/usr/local/opt/fzf'       " Fuzzy-finder (default Homebrew install location, Intel)
         Plug 'junegunn/fzf.vim'         " ...and its vim interface
     endif
     " Colorschemes
