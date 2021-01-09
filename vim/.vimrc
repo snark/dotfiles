@@ -51,8 +51,11 @@ set showmatch               " Highlight matching open/close characters
 set list                    " Display whitespace
 set listchars=tab:▸\ ,eol:¬ " Whitespace definitions
 set visualbell              " Disable bell in terminal
-" Preferred display font
-set guifont=Bitstream\ Vera\ Sans\ Mono:h12
+" Preferred display font; note that this is supported by MacVim but not e.g.
+" VimR
+if has('gui_running') && has('gui_macvim')
+    set guifont=Bitstream\ Vera\ Sans\ Mono:h12
+endif
 " }}}
 
 " ----- Wrap -----
