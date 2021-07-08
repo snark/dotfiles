@@ -24,10 +24,10 @@ brew "mas"                  # Manage App Store downloads via Brew
 # Quality of life
 cask "alfred"               # Keyboard-driven Swiss Army knife; free with paid plugin
 cask "bettertouchtool"      # Utility for making the touchbar useful; paid
+cask "hyperkey"             # Shareware capslock-to-escape/ctrl remapper; more limited
+                            # but fewer security implications than Karainber
 cask "iterm2"               # Base terminal application
 cask "jumpcut"              # Minimalist clipboard manager
-cask "karabiner-elements"   # Remap caps lock; note that this will require root access
-                            # and a security panel override for installation
 cask "nvalt"                # All-purpose notebook app
 cask "unshaky"              # Attempt to improve the bad butterfly keyboard behavior
 
