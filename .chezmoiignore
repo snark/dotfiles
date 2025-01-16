@@ -1,0 +1,11 @@
+# Files allowed in the dotfiles repo but unwanted in the
+# actual root or .config directory.
+#
+# See https://www.chezmoi.io/docs/reference/#chezmoiignore
+
+*.gz
+LICENSE
+README.md
+
+# This is where I stash my brewfiles, etc.
+extras/

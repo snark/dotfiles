@@ -1,0 +1,6 @@
+if [ "$#" -eq "0" ]; then
+    # pipe in a file or whatever
+    tr 'A-Za-z' 'N-ZA-Mn-za-m'
+else
+    echo $@ | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+fi

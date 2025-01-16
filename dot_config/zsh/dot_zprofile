@@ -1,0 +1,6 @@
+fpath=($fpath $ZDOTDIR/functions)
+autoload -Uz _evalcache
+# brew
+_evalcache /opt/homebrew/bin/brew shellenv
+# pipx/uv tool
+export PATH="$PATH:$HOME/.local/bin"

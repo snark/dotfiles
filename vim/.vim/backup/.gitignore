@@ -1,5 +1,0 @@
-# Keep this directory permanently excluded from git
-# by ignoring all files
-*
-# except this one
-!.gitignore

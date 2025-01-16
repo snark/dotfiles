@@ -1,0 +1,2 @@
+# https://github.com/marcus-crane/dotfiles/blob/main/zshrc.md
+functions | sed -n "/$1/,/^}$/p"

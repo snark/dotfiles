@@ -1,0 +1,53 @@
+# Store scripts generated my mise, fzf, etc, for faster loading
+# (signficantly faster in some cases). Delete $ZDOTDIR/evalcache
+# to clear things out.
+#
+# From
+# https://github.com/mroth/evalcache
+# See also https://github.com/QuarticCat/zsh-smartcache
+#
+local ZSH_EVALCACHE_DIR=${ZSH_EVALCACHE_DIR:-$ZDOTDIR/evalcache}
+
+local cmdHash="nohash" data="$*" name
+
+# use the first non-variable argument as the name
+for name in $@; do
+  if [ "${name}" = "${name#[A-Za-z_][A-Za-z0-9_]*=}" ]; then
+    break
+  fi
+done
+
+# if command is a function, include its definition in data
+if typeset -f "${name}" > /dev/null; then
+  data=${data}$(typeset -f "${name}")
+fi
+
+if builtin command -v md5 > /dev/null; then
+  cmdHash=$(echo -n "${data}" | md5)
+elif builtin command -v md5sum > /dev/null; then
+  cmdHash=$(echo -n "${data}" | md5sum | cut -d' ' -f1)
+fi
+
+local cacheFile="$ZSH_EVALCACHE_DIR/init-${name##*/}-${cmdHash}.sh"
+
+if [ "$ZSH_EVALCACHE_DISABLE" = "true" ]; then
+  eval ${(q)@}
+elif [ -s "$cacheFile" ]; then
+  # SBC - Cutting down on the clutter here.
+  if [[ -v EVALCACHE_DEBUG ]]; then
+    echo "evalcache: ${name} initialization cached*" >&2
+  fi
+  source "$cacheFile"
+else
+  if type "${name}" > /dev/null; then
+    # SBC - Cutting down on the clutter here.
+    if [[ -v EVALCACHE_DEBUG ]]; then
+      echo "evalcache: ${name} initialization not cached, caching output of: $*" >&2
+    fi
+    mkdir -p "$ZSH_EVALCACHE_DIR"
+    eval ${(q)@} > "$cacheFile"
+    source "$cacheFile"
+  else
+    echo "evalcache: ERROR: ${name} is not installed or in PATH" >&2
+  fi
+fi

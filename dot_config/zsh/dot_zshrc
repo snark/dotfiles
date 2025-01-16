@@ -1,0 +1,282 @@
+# zsh sources configuration in the following order.
+#
+# .zshenv    # sourced in all invocations
+# .zprofile  # sourced in login shells (e.g. tmux panes but *not* `exec zsh`)
+# .zshrc     # sourced in interactive shells
+# .zlogin    # sourced in login shells after zshrc
+# .zlogout   # sourced in login shells on logout
+
+# Some effort has been made to keep the time-to-first-prompt speed as fast as
+# possible (ideally below 50ms to first prompt when tmux is not being started);
+# see <https://github.com/romkatv/zsh-bench> and
+# <https://htr3n.github.io/2018/07/faster-zsh/> for tips. We're well below this
+# thanks to the cost of Mise (currently at about 120ms), but that's the dream.
+#
+# At some point I may want to add something like zinit or unplugged to get
+# asynchronous plugin loading. Pure and Purer [1] may also be useful examples
+# of how to get asynchronous behavior going (via zsh-async [2]) without
+# requiring a framework.
+# 
+# 1. <https://github.com/dfurnes/purer>
+# 2. <https://github.com/mafredri/zsh-async>
+#
+# See also zsh-lazyload
+# https://github.com/qoomon/zsh-lazyload
+
+if [[ "$ZPROF" = true ]]; then
+  zmodload zsh/zprof
+fi
+
+fpath=($fpath $ZDOTDIR/functions)
+autoload -Uz _evalcache
+
+## PROMPT
+# Base prompt is "%n@%m %1~ %#" if I ever want to switch back.
+setopt PROMPT_PERCENT NO_PROMPT_SUBST
+PROMPT='[%F{green}%D{%L:%M:%S}%f] %F{cyan}%1~%f $ '
+# For a fully async prompt, check out
+# https://vincent.bernat.ch/en/blog/2019-zsh-async-vcs-info
+#
+# sync_git_dirty in functions/ gives a dirty check but is slightly
+# slower than I want.
+# This function is from Reddit:
+# https://www.reddit.com/r/zsh/comments/10a3h7a/show_git_branch_script/
+#
+# We may be able to speed things up even further if git-status-fly is
+# available: https://github.com/bluz71/git-status-fly
+precmd() {
+    emulate -L zsh -o extended_glob
+    local branch
+    if (( $+commands[git] )) &&
+      [[ -n $GIT_DIR || -n ./(../)#.git(#qN) ]] &&
+      branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); then
+        typeset -g psvar=("(${branch})")
+    else
+        typeset -g psvar=()
+    fi
+}
+RPROMPT='%F{blue}%v%f'
+
+## HISTORY
+# Some sensible options, but our actual history is actually being saved with
+# Atuin, so a number of things are non-critical.
+HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
+setopt histignorespace # ignore anything starting with a space, e.g. " ls"
+setopt histignoredups # ignore direct repeats
+# save history after every command (but do not read it after every
+# command, preventing polluting between shells; for that we'd use
+# share_history
+setopt inc_append_history
+# macOS default; we don't need more than this thanks to Atuin.
+HISTSIZE=2000
+SAVEHIST=1000
+export HISTORY_IGNORE="(fg|ls|lr|pwd|exit)"
+
+## MISE
+# Mise is a polyglot manager for npm/pyenv-style shims, replacing a number of
+# separate managers (including direnv). We leave this out of .zprofile because
+# it's explicitly for interactive shell use. Note that this adds something like 
+# 50ms of prompt delay. See 
+# <https://mise.jdx.dev/faq.html#what-does-mise-activate-do>.
+#
+# Per recommendations, we're not going to leave this and direnv running at the
+# same time.
+if command -v mise 2>&1 >/dev/null; then
+    # instantiate a shell hook to run `mise hook-env` on prompt display.
+    _evalcache mise activate zsh
+fi
+
+### KEYBINDINGS
+# We'll use vim motions, but maintain ^-A/^-E for beginning of line and end of
+# line. Shift-tab and ^-N/^-P are available in the autocomplete menu.
+bindkey -v
+bindkey  "^A"  beginning-of-line
+bindkey  "^E"  end-of-line
+# Print current key bindings with `bindkey`
+# List available key bindings with `bindkey -l`
+
+## AUTOCOMPLETE
+# We will lazy-load compinit on the first use of TAB. Adapted from a Hacker
+# News comment: https://news.ycombinator.com/item?id=40127218
+#
+# Loading fzf later in the vimrc will give us "**" autocomplete.
+lazyload-compinit() {
+    # load compinit and rebind ^I (tab) to expand-or-complete, then compile
+    # completions as bytecode if needed.
+    autoload -Uz compinit
+    zstyle ':completion:*' menu select
+    zmodload zsh/complist
+    # Even though this only happens once per session, there's *still* no point
+    # in aggressively checking compinit for changes.
+    for dump in ~/.zcompdump(N.mh+24); do
+        compinit
+    done
+    compinit -C
+    bindkey "^I" expand-or-complete
+    {
+        local zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
+        # if $zcompdump exists,and we don't have a compiled version or the
+        # dump file is newer than the compiled file, update the bytecode.
+        if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
+            zcompile "$zcompdump"
+        fi
+    } &!
+    # pretend we called this directly, instead of the lazy loader
+    zle expand-or-complete
+    # Set our keybindings now that we have menuselect as a keymap; note that
+    # there is some sort of race condition here if we don't zmodload zsh/complist
+    # above where the menuselect keymap *usually*, but does not *always* exist.
+    bindkey -M menuselect "^N"   menu-complete
+    bindkey -M menuselect "^P"   reverse-menu-complete
+    # shift-tab
+    bindkey -M menuselect '^[[Z' reverse-menu-complete
+    # escape
+    bindkey -M menuselect '^['   undo
+    bindkey -M menuselect 'h'    vi-backward-char
+    bindkey -M menuselect 'k'    vi-up-line-or-history
+    bindkey -M menuselect 'l'    vi-forward-char
+    bindkey -M menuselect 'j'    vi-down-line-or-history
+    unfunction lazyload-compinit
+}
+# mark the function as a zle widget
+zle -N lazyload-compinit
+bindkey "^I" lazyload-compinit
+
+## VIM-MODE
+# We want a cursor to indicate mode selection, since we don't have a vim
+# statusline.
+# 0: blinking block.
+# 1: blinking block (default).
+# 2: steady block.
+# 3: blinking underline.
+# 4: steady underline.
+# 5: blinking bar, xterm.
+# 6: steady bar, xterm.
+# https://gist.github.com/LukeSmithxyz/e62f26e55ea8b0ed41a65912fbebbe52
+export KEYTIMEOUT=5
+function zle-keymap-select {
+  if [[ ${KEYMAP} == vicmd ]] ||
+     [[ $1 = 'block' ]]; then
+    echo -ne '\e[5 q'
+  elif [[ ${KEYMAP} == main ]] ||
+       [[ ${KEYMAP} == viins ]] ||
+       [[ ${KEYMAP} = '' ]] ||
+       [[ $1 = 'beam' ]]; then
+    echo -ne '\e[1 q'
+  fi
+}
+zle -N zle-keymap-select
+zle-line-init() {
+    zle -K viins # initiate `vi insert` as keymap (can be removed if
+                 # `bindkey -V` has been set elsewhere)
+}
+zle -N zle-line-init
+
+## FZF
+# Basic setup; this gets what I want for ^-T binding and generic history
+# searching for ^-R (which we will override later if atuin is installed).
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+if command -v fzf 2>&1 >/dev/null; then
+  _evalcache fzf --zsh
+fi
+
+## ATUIN
+# We want to use atuin for a permanently searchable history archive, but also
+# use fzf for quick fuzzy search of recent history. (And further we will not
+# bind either fzf or atuin to the up arrow.) Atuin is accessible from ^-W, and
+# fzf will continue to own ^-R.
+#
+# Function ganked from https://news.ycombinator.com/item?id=35249933
+() {
+    if ! command -v atuin &> /dev/null; then return 1; fi
+    bindkey '^W' atuin-search
+
+    export ATUIN_NOBIND="true"
+    _evalcache atuin init zsh
+    fzf-atuin-history-widget() {
+        local selected num
+        setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2>/dev/null
+
+        local atuin_opts="--cmd-only --limit ${FZF_ATUIN_LIMIT:-5000}"
+        local fzf_opts=(
+            --height=${FZF_TMUX_HEIGHT:-80%}
+            --tac
+            "-n2..,.."
+            --tiebreak=index
+            "--query=${LBUFFER}"
+            "+m"
+            "--bind=ctrl-d:reload(atuin search $atuin_opts -c $PWD),ctrl-r:reload(atuin search $atuin_opts)"
+        )
+
+        selected=$(
+            eval "atuin search ${atuin_opts}" |
+                fzf "${fzf_opts[@]}"
+        )
+        local ret=$?
+        if [ -n "$selected" ]; then
+            # the += lets it insert at current pos instead of replacing
+            LBUFFER+="${selected}"
+        fi
+        zle reset-prompt
+        return $ret
+    }
+    if command -v fzf &> /dev/null; then
+      zle -N fzf-atuin-history-widget
+      bindkey '^R' fzf-atuin-history-widget
+    fi
+}
+
+## TERE
+# Tere is like a very lightweight ranger/yazi/nnn, solely for file browsing
+# and directory traversal (rahter than any file management components).
+tere() {
+    if 
+    local result=$(command tere -m esc:NotSearching:ExitWithoutCd,space:NotSearching:Exit "$@")
+    [ -n "$result" ] && cd -- "$result"
+}
+
+## TMUX
+#
+# Autostart tmux in a base session name OR an existing but unattached session
+# OR a new session with a name indicating when the terminal session started.
+# https://stackoverflow.com/questions/3432536/how-to-create-new-tmux-session-if-none-exists
+if [ -z "$TMUX" ]; then
+    local BASESESSION="BASE"
+    local DT=$(date +"%Y-%m-%dT%H:%M:%SZ")
+    (tmux new -s $BASESESSION) &> /dev/null \
+      || tmux attach -t ${$(sort -n <<<"${$(tmux list-sessions -F '#{session_name}' -f '#{==:#{session_attached},0}')[*]}")[1]} &> /dev/null \
+      || tmux new -s "$DT"
+fi
+
+## ALIASES
+alias ..="cd .."
+alias ...="cd ../.."
+# gdate has this built in, but Macs don't come with GNU coreutils preinstalled.
+alias gmt="date +\"%Y-%m-%dT%H:%M:%SZ\""
+alias lr="ls -ltrh"
+alias iso="date +\"%Y-%m-%dT%H:%M:%SZ\""
+alias sane="stty sane"
+alias vi="nvim"
+alias vim="nvim"
+alias vv="command vi"
+
+## FUNCTIONS
+autoload -Uz colorcodes
+autoload -Uz fancy-control-z
+zle -N fancy-control-z
+bindkey '^Z' fancy-control-z
+autoload -Uz fkill
+autoload -Uz funcnames
+autoload -Uz funcsearch
+autoload -Uz listener
+autoload -Uz rot13
+autoload -Uz take
+autoload -Uz viewdefaults
+
+# Dedup path/fpath
+typeset -gU fpath path
+
+if [[ "$ZPROF" = true ]]; then
+  zprof
+fi

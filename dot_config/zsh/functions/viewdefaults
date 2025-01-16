@@ -1,0 +1,7 @@
+# https://github.com/marcus-crane/dotfiles/blob/main/zshrc.md
+defaults domains |
+  sed 's/$/, NSGlobalDomain/' |
+  tr -d ',' |
+  tr ' ' '\n' |
+  fzf --preview="defaults export {} - | python3 -c \"import sys,plistlib,pprint; pprint.pprint(plistlib.loads(sys.stdin.read().encode('utf-8')))\"" |
+  xargs -n1 -I{} sh -c 'defaults export $1 - > $1.plist' -- {}
