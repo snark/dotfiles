@@ -7,5 +7,8 @@
 LICENSE
 README.md
 
+# '.keep' files are just to get directory structure into Git
+**/.keep
+
 # This is where I stash my brewfiles, etc.
 extras/

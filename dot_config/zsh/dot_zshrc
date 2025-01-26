@@ -277,6 +277,11 @@ autoload -Uz rot13
 autoload -Uz take
 autoload -Uz viewdefaults
 
+## LOCAL CODE
+for file in $ZDOTDIR/local/*(N);
+    do . $file;
+done
+
 # Dedup path/fpath
 typeset -gU fpath path
 
