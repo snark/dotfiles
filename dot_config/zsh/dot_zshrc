@@ -139,6 +139,8 @@ lazyload-compinit() {
     bindkey -M menuselect 'k'    vi-up-line-or-history
     bindkey -M menuselect 'l'    vi-forward-char
     bindkey -M menuselect 'j'    vi-down-line-or-history
+    # re-up zoxide
+    _evalcache zoxide init zsh
     unfunction lazyload-compinit
 }
 # mark the function as a zle widget
@@ -250,6 +252,11 @@ if [ -z "$TMUX" ]; then
     (tmux new -s $BASESESSION) &> /dev/null \
       || tmux attach -t ${$(sort -n <<<"${$(tmux list-sessions -F '#{session_name}' -f '#{==:#{session_attached},0}')[*]}")[1]} &> /dev/null \
       || tmux new -s "$DT"
+fi
+
+## ZOXIDE
+if command -v zoxide 2>&1 >/dev/null; then
+  _evalcache zoxide init zsh
 fi
 
 ## ALIASES
