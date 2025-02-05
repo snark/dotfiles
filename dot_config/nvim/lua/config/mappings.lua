@@ -19,13 +19,14 @@ kset({'n', 'x'}, 'H', 'Hzz', { noremap = true })
 kset({'n', 'x'}, 'L', 'Lzz', { noremap = true })
 
 -- Hide highlights after search with space
-map('n', '<Space>', ':nohlsearch<Bar>:echo<CR>', { noremap = true, silent = true })
+map('n', '<Space>', ':nohlsearch<Bar>:echo<CR>',
+   { noremap = true, silent = true, desc = "Clear search highlights" })
 
 -- Semicolon works as colon
 map('n', ';', ':', { noremap = true, silent = true })
 
 -- Q to open the quickfix panel
-map('n', 'Q', ':copen<CR>', { noremap = true, silent = true })
+map('n', 'Q', ':copen<CR>', { noremap = true, silent = true, desc = "Open quickfix panel" })
 
 -- Vertical split controls (original due to Steve Losh, I believe?)
 map('n', '<leader>w', '<C-w>v<C-w>l', { noremap = true })    -- ,w opens vertical split and switches to it
@@ -36,11 +37,11 @@ map('n', '<C-k>', '<C-w>k', { noremap = true })
 map('n', '<C-l>', '<C-w>l', { noremap = true })
 
 -- Strip whitespace
-map('n', '<leader>W', [[:%s/\s\+$//<CR>:let @/=''<CR>]], { noremap = true })
+map('n', '<leader>W', [[:%s/\s\+$//<CR>:let @/=''<CR>]], { noremap = true, desc = "Strip whitespace via regex" })
 -- Turn colorcolumn on and off
 map('n', '<leader>c',
    ':execute "set colorcolumn=" . (&colorcolumn == "" ? "80" : "")<CR>',
-   { silent = true, noremap = true })
+   { silent = true, noremap = true, desc = "Toggle colorcolumn" })
 
 -- A handrolled smartab function.
 -- * When the cursor is at line-start or whitespace, insert a tab.
@@ -84,3 +85,12 @@ map('n', '<leader>ld', '<cmd>Telescope diagnostics bufnr=0<cr>', { noremap = tru
 map('n', '<leader>lw', '<cmd>Telescope diagnostics<cr>', { noremap = true })
 
 kset({'n', 'x'}, '<leader>8', '<cmd>Telescope grep_string word_match=-w<cr>', { noremap =  true })
+
+-- Visual mode indentation
+map('v', '<', '<gv', { noremap = true, silent = true, desc = "Indent left and reselect" })
+map('v', '>', '>gv', { noremap = true, silent = true, desc = "Indent right and reselect" })
+
+-- 'U' for redo is a helixism, but I really like it.
+map('n', 'U', '<C-r><cr>', { noremap = true, desc = "Redo last change" })
+-- And I never use ^-U for up.
+map('n', '<C-u>', 'U', { noremap = true, desc = "Undo changes on current line" })
