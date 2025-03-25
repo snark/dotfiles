@@ -174,7 +174,7 @@ nnoremap <C-l> <C-w>l
 " Note that we are putting colors *after* Plugins to allow us to load
 " colorschemes via vim-plugin.
 set background=dark                     " Dark background
-silent! colors desert                   " Sane default on base systems
+silent! colors quiet                    " Sane default on base systems
 " With true black background
 hi NonText ctermbg=black guibg=black
 hi Normal ctermbg=black guibg=black
