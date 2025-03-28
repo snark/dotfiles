@@ -1,0 +1,20 @@
+# More fonts -- some coding, some text, some display
+# USAGE: brew bundle --file=./Brewfile.font
+
+cask "font-alegreya"
+cask "font-b612"
+cask "font-b612-mono"
+cask "font-bitter"
+cask "font-brass-mono"
+cask "font-fantasque-sans-mono-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-ibm-plex-math"
+cask "font-ibm-plex-mono"
+cask "font-ibm-plex-sans"
+cask "font-inter"
+cask "font-lato"
+cask "font-libre-baskerville"
+cask "font-maple-mono"
+cask "font-open-sans"
+cask "font-poppins"
+cask "font-source-serif-4"

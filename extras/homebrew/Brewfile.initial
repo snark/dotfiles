@@ -1,0 +1,42 @@
+# Note that this Brewfile presumes that Homebrew and the command-line Xcode
+# tools have already been installed.
+#
+# This file is for things that will come into immediate use when setting up
+# a new computer, either because of pure muscle memory (Hyperkey and Jumpcut,
+# e.g.) or because I'll want ot use them while installing other things. This is 
+# sort of the baseline without which I wouldn't want to try to get anything
+# done on a new computer.
+#
+# USAGE: brew bundle --file=./Brewfile.initial
+
+cask_args appdir: '/Applications'
+
+# Update a few core commands
+brew "curl"                 # More recent than base Mac install
+brew "git"                  # More recent than base Mac install
+brew "openssl"              # More recent than base Mac install
+brew "zsh"                  # More recent than base Mac install
+
+# CLI setup
+brew "chezmoi"              # Dotfile manager
+brew "fzf"                  # Fuzzy-finder; an important basis for everything
+                            # else in the terminal.
+brew "ripgrep"              # ack with superpowers
+brew "tmux"                 # screen sessions/terminal multiplexer
+
+# Casks
+cask "alacritty"            # GPU-powered basic terminal application
+                            # better UX than Karabiner; paid
+cask "hyperkey"             # Shareware meta-key remapper; more limited but
+                            # better UX than Karabiner; freeware
+cask "jumpcut"              # Minimalist clipboard manager
+cask "macpass"              # macOS-native KeePass client
+
+# Text editors
+brew "neovim"               # A highly compatible modern vim with baked-in
+                            # Python support; my daily-driver for writing code.
+
+# Fonts; as defined in some of my dotfiles.
+cask "font-bitstream-vera"                     # My long-time favorite
+cask "font-bitstream-vera-sans-mono-nerd-font" # Nerd Font version of same
+cask "font-noto-emoji"                         # terminal-friendly emoji font

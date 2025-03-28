@@ -1,0 +1,68 @@
+# Brewfile for general GUI applications.
+# USAGE: brew bundle --file=./Brewfile.gui
+
+cask_args appdir: '/Applications'
+
+cask "acorn"                # Image editor; lighter-weight/easier than
+                            # something like Affinity; paid
+cask "ente-auth"            # TOTP/2FA client; replaces Authy
+cask "iina"                 # Similar to VLC, with a more modern UI (wrapper
+                            # around MPV, I believe?)
+cask "kap"                  # screen recorder; replaces `licecap`
+cask "firefox"              # the ol' gray mare
+cask "maestral"             # non-invasive Dropbox client
+cask "netnewswire"          # RSS reader
+cask "viz"                  # extract text from images/QR codes
+
+# Notetaking and editors
+# Note that nvAlt, which I've been using for over a decade, is no longer
+# available on Homebrew; until its official successor, nvUltra, is released,
+# I'm using nvAlt downloaded directly but also Obsidian and sometimes FSNotes.
+cask "fsnotes"              # closest thing to a supported nvAlt in Jan. 2025?
+cask "obsidian"             # notetaking app with a huge ecosystem
+cask "tunnelblick"          # OpenVPN client
+cask "vimr"                 # GUI neovim client
+
+# Networking
+cask "tailscale"            # Wireguard wrapper; required for a number of
+                            # workflows.
+cask "transmission"         # BitTorrent client
+cask "tunnelblick"          # OpenVPN client
+
+# Utilities and UX
+cask "daisydisk"            # disk space explorer; paid
+cask "jordanbaird-ice"      # maintained replacement for Hidden Bar/Bartender
+cask "keka"                 # archiver/unarchiver
+cask "itsycal"              # minimalist menubar calendar (adorbs)
+cask "keyboard-maestro"     # longtime Mac macro engine; paid. Compare espanso,
+                            # aText, TypeIt4Me, etc
+cask "mints"                # macOS system logging utility
+cask "pika"                 # a nice color picker
+cask "rectangle"            # window manager; less overwhelming than something
+                            # like aerospace
+cask "soundsource"          # pipe sound from different applications to
+                            # different outputs; paid
+cask "swiftbar"             # dump the output of a script into the menu bar
+cask "transnomino"          # batch file renamer
+
+# Unavailable as casks
+mas "Amphetamine", id: 937984704               # wrapper around `caffeinate` to
+                                               # avoid sleeping during tasks
+mas "Folder Preview", id: 6698876601           # QuickLook provider to preview
+                                               # folder contents
+mas "KeyLimePie Keystrokes", id: 1575163350    # keystroke visualizer
+mas "Tot", id: 1491071483                      # menubar scratchpad based on
+                                               # Andre Torrez's "Tyke"
+mas "Xcode", id: 497799835                     # IDE for Swift applications
+
+# Safari plugins
+mas "Hush", id: 1544743900
+mas "Vinegar", id: 1591303229
+
+# Quicklook plugins -- after Sequoia, some ones that I used to use like
+# qlstephen, qlimagesize, and quicklook-json are no longer functional.
+cask "apparency"
+cask "qlmarkdown"
+cask "suspicious-package"
+
+# Not present: Lulu or Little Snitch

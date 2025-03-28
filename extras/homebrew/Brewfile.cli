@@ -1,0 +1,37 @@
+# Note that this Brewfile doesn't cover yt-dlp; given the speed of updates
+# there, we're better off using pipx/uv to install it so we're not bound on
+# Homebrew versioning.
+#
+# A few of these programs are assumed to be present in my .zsh config, but
+# it should work successfully (if non-optimally) without them.
+#
+# A few things (curl, git, etc.) have been yoinked to the initial Brewfile
+# for access as soon as the bootscript is run.
+#
+# USAGE: brew bundle --file=./Brewfile.cli
+
+brew "age"            # modern-era PGP replacement
+brew "atuin"          # sqlite3 recording for shell history (and more);
+                      # requires some poking to get it to play nicely with
+                      # fzf
+brew "bat"            # syntax-highlighting pager
+brew "choose"         # stripped-down replacement for cut/awk
+brew "dockutil"       # programmatic controller for macOS Dock
+brew "entr"           # run a command on file change
+brew "fd"             # .gitignore-aware `find` with simpler commands
+brew "gallery-dl"     # image gallery downloader (yt-dlp for Imgur!)
+brew "gron"           # greppable JSON
+brew "jello"          # like jq with Python syntax
+brew "jq"             # JSON transformation/selector tool
+brew "just"           # task runner (strigped-down make)
+brew "magic-wormhole" # move files between computers easily
+brew "ncdu"           # TUI for understanding disk space usage
+brew "tere"           # terminal file explorer -- like nnn/ranger/yazi but with
+                      # the sole goal of directory traversal and file listing
+brew "tokei"          # `cloc` replacement -- count lines of code
+brew "tree"           # always weird that this isn't a base POSIX command
+brew "watchman"       # like entr, but well-tuned for whole directories
+brew "wget"           # I always have to check how to do this in curl
+brew "vim"            # pick up a modern version for $EDITOR/$VISUAL use
+brew "yt-dlp"         # fork of youtube-dl, incredibly useful
+brew "zoxide"         # autojump replacement; faster `cd` to recent directories

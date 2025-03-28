@@ -1,0 +1,17 @@
+# Some media-related applications.
+# USAGE: brew bundle --file=./Brewfile.media
+
+cask_args appdir: '/Applications'
+
+cask "blackhole-2ch"        # Audio capture from applications
+brew "ffmpeg"               # Video transcoder Swiss Army knife
+brew "handbrake"            # Rip DVDs for backup/easier playback
+brew "libbluray"            # Open BluRay discs in VLC
+brew "libdvdcss"            # Required for handbrake to be able to open DVDs
+cask "makemkv"              # Rip BluRays for backup/easier playback
+cask "obs"                  # Screen recording suite
+cask "simple-comic"         # Read CBZ/CBR files
+cask "submariner"           # Subsonic API client for connecting to Navidrome
+cask "vlc"                  # Open a really broad selection of media files;
+                            # compare iina or mpv
+cask "xld"                  # Rip CDs to FLAC

@@ -1,0 +1,39 @@
+# Dev tools, largely for using node and python and doing some webdev.
+# Rust is handled outside of Homebrew using rustup (installed directly).
+
+# USAGE: brew bundle --file=./Brewfile.dev
+
+# Version managers
+brew "asdf"                 # Polyglot language manager: pyenv, nvm, etc.
+                            # in a single tool. I had switched to mise for
+    		            # performance reasons, but asdf has recently
+                            # been rewritten in Golang for speed, so...?
+brew "mise"                 # Polyglot language manager, like asdf, for
+                            # installing node, python, etc.
+brew "uv"                   # Python-specific language manager and pipx
+                            # replacement
+
+# Containers
+brew "lazydocker"    	    # Nice TUI interface for container overviews
+cask "orbstack"             # Drop-in replacement for Docker Desktop; there
+                            # may be further improvements available to the
+                            # Mac container situation as of 2025 (e.g. Colima,
+                            # Podman, Tart, etc.)
+cask "utm"                  # Apple Silicon-enhanced QEMU
+
+# Webdev tools
+brew "hurl"                 # Repeatable HTTP requests using plaintext config
+brew "monolith"             # Single-file backup of websites
+brew "wrk"                  # Stress-test servers
+brew "xh"                   # Single-file executable dupe of httpie
+
+# Databases
+brew "litecli"    	    # Nicer CLI interface for sqlite3
+brew "duckdb"    	    # Columnar DB (and a nice CSV interace!)
+brew "sqlite3"    	    # Workhorse embeddable DBs
+
+# Misc utilities
+brew "cookiecutter"         # Project setup tooling
+brew "just"    	            # Command runner; a simpler make
+brew "hyperfine"            # Benchmarking tool
+brew "pandoc"    	    # Poyglot text transformation utility
