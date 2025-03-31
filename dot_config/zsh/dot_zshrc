@@ -186,6 +186,10 @@ if command -v fzf 2>&1 >/dev/null; then
   _evalcache fzf --zsh
 fi
 
+if [[ -f ~/.cargo/env ]]; then
+  . ~/.cargo/env
+fi
+
 ## ATUIN
 # We want to use atuin for a permanently searchable history archive, but also
 # use fzf for quick fuzzy search of recent history. (And further we will not
