@@ -273,6 +273,7 @@ alias vv="command vi"
 
 ## FUNCTIONS
 autoload -Uz colorcodes
+autoload -Uz defaultsdiff
 autoload -Uz fancy-control-z
 zle -N fancy-control-z
 bindkey '^Z' fancy-control-z

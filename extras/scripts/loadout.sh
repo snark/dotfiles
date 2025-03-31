@@ -94,6 +94,7 @@ if command -v uv > /dev/null 2>&1; then
   # passhole is a CLI interface for KeePass, unavailable on Homebrew
   uv tool install passhole
   uv tool install ruff
+  uv tool install sphinx
 fi
 
 # First, back up the defaults as of now.
@@ -135,7 +136,6 @@ echo "Setting launch on login for third-party applications..."
 for APP in Amphetamine Hyperkey Ice Itsycal Jumpcut Rectangle SoundSource SwiftBar Tailscale Tot; do
   echo Adding ${APP}
   printf -v OSA 'tell application "System Events" to make new login item with properties {name:\"%s\", path:\"/Applications/%s.app\", hidden:true}' "$APP" "$APP"
-  echo $OSA
   osascript -e "$OSA"
   open /Applications/$APP.app
 done
@@ -151,6 +151,8 @@ done
 ###############################################################################
 # General UI/UX                                                               #
 ###############################################################################
+
+echo "General defaults..."
 
 # Disable Apple Intelligence
 defaults write com.apple.CloudSubscriptionFeatures.optIn "545129924" -bool "false"
@@ -230,6 +232,7 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
 
+echo "Trackpad/mouse defaults..."
 # Trackpad: enable tap to click for this user and for the login screen
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
@@ -277,6 +280,7 @@ launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/nul
 # Energy saving                                                               #
 ###############################################################################
 
+echo "Energy defaults..."
 # Enable lid wakeup
 sudo pmset -a lidwake 1
 
@@ -317,6 +321,7 @@ sudo pmset -a hibernatemode 3
 ###############################################################################
 # Screen                                                                      #
 ###############################################################################
+echo "Screen defaults..."
 
 # Require password immediately after sleep or screen saver begins
 defaults write com.apple.screensaver askForPassword -int 1
@@ -342,6 +347,7 @@ sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutio
 ###############################################################################
 # Finder                                                                      #
 ###############################################################################
+echo "Finder defaults..."
 
 # Finder: allow quitting via ⌘ + Q; doing so will also hide desktop icons
 defaults write com.apple.finder QuitMenuItem -bool true
@@ -438,7 +444,7 @@ defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 #defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 
 # Show the ~/Library folder
-chflags nohidden ~/Library && xattr -d com.apple.FinderInfo ~/Library
+#chflags nohidden ~/Library && xattr -d com.apple.FinderInfo ~/Library
 
 # Show the /Volumes folder
 sudo chflags nohidden /Volumes
@@ -453,6 +459,7 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 ###############################################################################
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
+echo "Dock defaults..."
 
 # Move Dock to right
 defaults write com.apple.dock orientation -string right 
@@ -545,6 +552,7 @@ defaults write com.apple.dock wvous-bl-modifier -int 0
 ###############################################################################
 # Safari & WebKit                                                             #
 ###############################################################################
+echo "Safari defaults..."
 
 # Privacy: don’t send search queries to Apple
 defaults write com.apple.Safari UniversalSearchEnabled -bool false
@@ -638,56 +646,9 @@ defaults write com.apple.Safari SearchProviderIdentifier -string com.duckduckgo
 defaults write com.apple.Safari SearchProviderShortName -string DuckDuckGo
 
 ###############################################################################
-# Spotlight                                                                   #
-###############################################################################
-
-# Hide Spotlight tray-icon (and subsequent helper)
-#sudo chmod 600 /System/Library/CoreServices/Search.bundle/Contents/MacOS/Search
-# Disable Spotlight indexing for any volume that gets mounted and has not yet
-# been indexed before.
-# Use `sudo mdutil -i off "/Volumes/foo"` to stop indexing any volume.
-sudo defaults write /.Spotlight-V100/VolumeConfiguration Exclusions -array "/Volumes"
-# Change indexing order and disable some search results
-# Yosemite-specific search results (remove them if you are using macOS 10.9 or older):
-# 	MENU_DEFINITION
-# 	MENU_CONVERSION
-# 	MENU_EXPRESSION
-# 	MENU_SPOTLIGHT_SUGGESTIONS (send search queries to Apple)
-# 	MENU_WEBSEARCH             (send search queries to Apple)
-# 	MENU_OTHER
-defaults write com.apple.spotlight orderedItems -array \
-	'{"enabled" = 1;"name" = "APPLICATIONS";}' \
-	'{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
-	'{"enabled" = 1;"name" = "DIRECTORIES";}' \
-	'{"enabled" = 1;"name" = "PDF";}' \
-	'{"enabled" = 1;"name" = "FONTS";}' \
-	'{"enabled" = 0;"name" = "DOCUMENTS";}' \
-	'{"enabled" = 0;"name" = "MESSAGES";}' \
-	'{"enabled" = 0;"name" = "CONTACT";}' \
-	'{"enabled" = 0;"name" = "EVENT_TODO";}' \
-	'{"enabled" = 0;"name" = "IMAGES";}' \
-	'{"enabled" = 0;"name" = "BOOKMARKS";}' \
-	'{"enabled" = 0;"name" = "MUSIC";}' \
-	'{"enabled" = 0;"name" = "MOVIES";}' \
-	'{"enabled" = 0;"name" = "PRESENTATIONS";}' \
-	'{"enabled" = 0;"name" = "SPREADSHEETS";}' \
-	'{"enabled" = 0;"name" = "SOURCE";}' \
-	'{"enabled" = 0;"name" = "MENU_DEFINITION";}' \
-	'{"enabled" = 0;"name" = "MENU_OTHER";}' \
-	'{"enabled" = 0;"name" = "MENU_CONVERSION";}' \
-	'{"enabled" = 0;"name" = "MENU_EXPRESSION";}' \
-	'{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
-	'{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
-# Load new settings before rebuilding the index
-killall mds > /dev/null 2>&1
-# Make sure indexing is enabled for the main volume
-sudo mdutil -i on / > /dev/null
-# Rebuild the index from scratch
-sudo mdutil -E / > /dev/null
-
-###############################################################################
 # Terminal
 ###############################################################################
+echo "Terminal defaults..."
 
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array 4
@@ -702,6 +663,7 @@ defaults write com.apple.Terminal ShowLineMarks -int 0
 ###############################################################################
 # Time Machine                                                                #
 ###############################################################################
+echo "Time Machine defaults..."
 
 # Prevent Time Machine from prompting to use new hard drives as backup volume
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
@@ -712,6 +674,7 @@ defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 ###############################################################################
 # Activity Monitor                                                            #
 ###############################################################################
+echo "Activity Monitor defaults..."
 
 # Show the main window when launching Activity Monitor
 defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
@@ -729,6 +692,7 @@ defaults write com.apple.ActivityMonitor SortDirection -int 0
 ###############################################################################
 # Address Book, Dashboard, iCal, TextEdit, and Disk Utility                   #
 ###############################################################################
+echo "Misc. app (Texpad, AddressBook) defaults..."
 
 # Enable the debug menu in Address Book
 defaults write com.apple.addressbook ABShowDebugMenu -bool true
@@ -758,6 +722,7 @@ defaults write com.apple.DiskUtility advanced-image-options -bool true
 ###############################################################################
 # Mac App Store                                                               #
 ###############################################################################
+echo "App Store defaults..."
 
 # Enable the WebKit Developer Tools in the Mac App Store
 #defaults write com.apple.appstore WebKitDeveloperExtras -bool true
@@ -789,6 +754,7 @@ defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
 ###############################################################################
 # Photos                                                                      #
 ###############################################################################
+echo "Photo defaults..."
 
 # Prevent Photos from opening automatically when devices are plugged in
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
@@ -796,6 +762,7 @@ defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 ###############################################################################
 # Messages                                                                    #
 ###############################################################################
+echo "Messages defaults..."
 
 # Disable automatic emoji substitution (i.e. use plain text smileys)
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
@@ -809,49 +776,16 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 ###############################################################################
 # Music                                                                       #
 ###############################################################################
+echo "Music defaults..."
 
 # Disable notifications
 defaults write com.apple.Music "userWantsPlaybackNotifications" -bool "false"
 
 ###############################################################################
-# Transmission.app                                                            #
-###############################################################################
-
-# Use `~/Downloads/Torrents` to store incomplete downloads
-mkdir -p "$HOME/Downloads/Torrents"
-defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
-defaults write org.m0k.transmission IncompleteDownloadFolder -string "${HOME}/Downloads/Torrents"
-
-# Use `~/Downloads` to store completed downloads
-defaults write org.m0k.transmission DownloadLocationConstant -bool true
-
-# Don’t prompt for confirmation before downloading
-defaults write org.m0k.transmission DownloadAsk -bool false
-defaults write org.m0k.transmission MagnetOpenAsk -bool false
-
-# Don’t prompt for confirmation before removing non-downloading active transfers
-defaults write org.m0k.transmission CheckRemoveDownloading -bool true
-
-# Trash original torrent files
-defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
-
-# Hide the donate message
-defaults write org.m0k.transmission WarningDonate -bool false
-# Hide the legal disclaimer
-defaults write org.m0k.transmission WarningLegal -bool false
-
-# IP block list: see: https://github.com/mathiasbynens/dotfiles/issues/1073
-# Source: https://giuliomac.wordpress.com/2014/02/19/best-blocklist-for-transmission/
-#defaults write org.m0k.transmission BlocklistNew -bool true
-#defaults write org.m0k.transmission BlocklistURL -string "http://john.bitsurge.net/public/biglist.p2p.gz"
-#defaults write org.m0k.transmission BlocklistAutoUpdate -bool true
-
-# Randomize port on launch
-defaults write org.m0k.transmission RandomPort -bool true
-
-###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
+
+echo "Settings adjusted; a restart may be required."
 
 for app in "Activity Monitor" \
 	"Address Book" \
@@ -868,4 +802,3 @@ for app in "Activity Monitor" \
 	killall "${app}" &> /dev/null
 done
 
-echo "Settings adjusted; a restart may be required."

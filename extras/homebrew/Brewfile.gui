@@ -12,6 +12,7 @@ cask "kap"                  # screen recorder; replaces `licecap`
 cask "firefox"              # the ol' gray mare
 cask "maestral"             # non-invasive Dropbox client
 cask "netnewswire"          # RSS reader
+cask "slack"                # work/personal chat
 cask "viz"                  # extract text from images/QR codes
 
 # Notetaking and editors
