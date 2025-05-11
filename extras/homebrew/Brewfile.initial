@@ -26,7 +26,6 @@ brew "tmux"                 # screen sessions/terminal multiplexer
 
 # Casks
 cask "alacritty"            # GPU-powered basic terminal application
-                            # better UX than Karabiner; paid
 cask "hyperkey"             # Shareware meta-key remapper; more limited but
                             # better UX than Karabiner; freeware
 cask "jumpcut"              # Minimalist clipboard manager

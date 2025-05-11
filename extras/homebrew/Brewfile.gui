@@ -5,6 +5,7 @@ cask_args appdir: '/Applications'
 
 cask "acorn"                # Image editor; lighter-weight/easier than
                             # something like Affinity; paid
+cask "confectionery"        # browser chrome-free browser, for screenshots
 cask "ente-auth"            # TOTP/2FA client; replaces Authy
 cask "iina"                 # Similar to VLC, with a more modern UI (wrapper
                             # around MPV, I believe?)
@@ -63,6 +64,7 @@ mas "Vinegar", id: 1591303229
 # Quicklook plugins -- after Sequoia, some ones that I used to use like
 # qlstephen, qlimagesize, and quicklook-json are no longer functional.
 cask "apparency"
+cask "glance-chamburr"
 cask "qlmarkdown"
 cask "suspicious-package"
 

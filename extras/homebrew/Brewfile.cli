@@ -21,6 +21,8 @@ brew "entr"           # run a command on file change
 brew "fd"             # .gitignore-aware `find` with simpler commands
 brew "gallery-dl"     # image gallery downloader (yt-dlp for Imgur!)
 brew "gron"           # greppable JSON
+brew "infat"          # control MacOS default applications (no more opening a
+                      # random JSON file with XCode!)
 brew "jello"          # like jq with Python syntax
 brew "jq"             # JSON transformation/selector tool
 brew "just"           # task runner (strigped-down make)
