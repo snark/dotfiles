@@ -16,7 +16,7 @@ local marks = {}
 local sign_cache = {}
 
 --- The sign and autocommand group name.
-local sign_group_name = 'mariasolos/marks_signs'
+local sign_group_name = "snark/marks_signs"
 
 ---@param mark string
 ---@return boolean
@@ -49,7 +49,7 @@ local function delete_mark(mark, bufnr)
     buffer_marks[mark] = nil
 
     -- Remove the mark.
-    vim.cmd('delmarks ' .. mark)
+    vim.cmd("delmarks " .. mark)
 end
 
 ---@param mark string
@@ -72,9 +72,9 @@ local function register_mark(mark, bufnr, line)
     buffer_marks[mark] = { line = line, id = id }
 
     -- Create the sign.
-    local sign_name = 'Marks_' .. mark
+    local sign_name = "Marks_" .. mark
     if not sign_cache[sign_name] then
-        vim.fn.sign_define(sign_name, { text = mark, texthl = 'DiagnosticSignOk' })
+        vim.fn.sign_define(sign_name, { text = mark, texthl = "DiagnosticSignOk" })
         sign_cache[sign_name] = true
     end
     vim.fn.sign_place(id, sign_group_name, sign_name, bufnr, {
@@ -85,8 +85,8 @@ end
 
 ---@param bufnr integer
 local function set_keymaps(bufnr)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'm', '', {
-        desc = 'Add mark',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "m", "", {
+        desc = "Add mark",
         callback = function()
             local ok, mark = pcall(function()
                 return vim.fn.getcharstr()
@@ -96,12 +96,12 @@ local function set_keymaps(bufnr)
             end
 
             register_mark(mark, bufnr)
-            vim.cmd('normal! m' .. mark)
+            vim.cmd("normal! m" .. mark)
         end,
     })
 
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'dm', '', {
-        desc = 'Delete mark',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "dm", "", {
+        desc = "Delete mark",
         callback = function()
             local ok, mark = pcall(function()
                 return vim.fn.getcharstr()
@@ -114,23 +114,23 @@ local function set_keymaps(bufnr)
         end,
     })
 
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'dm-', '', {
-        desc = 'Delete all buffer marks',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "dm-", "", {
+        desc = "Delete all buffer marks",
         callback = function()
             marks[bufnr] = {}
             vim.fn.sign_unplace(sign_group_name, { buffer = bufnr })
-            vim.cmd 'delmarks!'
+            vim.cmd("delmarks!")
         end,
     })
 end
 
 -- Set up autocommands to refresh the signs.
-vim.api.nvim_create_autocmd('BufWinEnter', {
+vim.api.nvim_create_autocmd("BufWinEnter", {
     group = vim.api.nvim_create_augroup(sign_group_name, { clear = true }),
     callback = function(args)
         local bufnr = args.buf
         -- Only handle normal buffers.
-        if vim.bo[bufnr].bt ~= '' then
+        if vim.bo[bufnr].bt ~= "" then
             return true
         end
 
@@ -158,7 +158,7 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
                 register_mark(mark, bufnr, mark_line)
             end
         end
-        for _, data in ipairs(vim.fn.getmarklist '%') do
+        for _, data in ipairs(vim.fn.getmarklist("%")) do
             local mark = data.mark:sub(2, 3)
             local mark_line = data.pos[2]
             local cached_mark = marks[bufnr][mark]
@@ -169,4 +169,3 @@ vim.api.nvim_create_autocmd('BufWinEnter', {
         end
     end,
 })
-

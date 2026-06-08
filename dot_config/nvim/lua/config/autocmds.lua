@@ -19,26 +19,36 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     end,
 })
 
+-- Strip trailing whitespace on write
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*",
+    callback = function()
+        save_cursor = vim.fn.getpos(".")
+        vim.cmd([[%s/\s\+$//e]])
+        vim.fn.setpos(".", save_cursor)
+    end,
+})
+
 -- Numbertoggle -- when the buffer loses focus, switch from hybrid numbers to
 -- absolute: https://github.com/sitiom/nvim-numbertoggle
 local augroup = vim.api.nvim_create_augroup("numbertoggle", {})
 vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, {
-   pattern = "*",
-   group = augroup,
-   callback = function()
-      if vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
-         vim.opt.relativenumber = true
-      end
-   end,
+    pattern = "*",
+    group = augroup,
+    callback = function()
+        if vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
+            vim.opt.relativenumber = true
+        end
+    end,
 })
 
 vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" }, {
-   pattern = "*",
-   group = augroup,
-   callback = function()
-      if vim.o.nu then
-         vim.opt.relativenumber = false
-         vim.cmd "redraw"
-      end
-   end,
+    pattern = "*",
+    group = augroup,
+    callback = function()
+        if vim.o.nu then
+            vim.opt.relativenumber = false
+            vim.cmd("redraw")
+        end
+    end,
 })
