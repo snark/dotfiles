@@ -34,6 +34,7 @@ brew "sqlite3"    	    # Workhorse embeddable DBs
 
 # Misc utilities
 brew "cookiecutter"         # Project setup tooling
+brew "delta"                # `git diff`-tailored pager
 brew "just"    	            # Command runner; a simpler make
 brew "hyperfine"            # Benchmarking tool
 brew "pandoc"    	    # Poyglot text transformation utility

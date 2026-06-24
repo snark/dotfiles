@@ -4,6 +4,14 @@
 	email = {{ .gitEmail }}
 [core]
 	excludesfile = ~/.gitignore_global
+	pager = delta
+[delta]
+	dark = true      # or light = true, or omit for auto-detection
+        navigate = true  # use n and N to move between diff sections
+[interactive]
+        diffFilter = delta --color-only
+[merge]
+        conflictstyle = zdiff3
 [alias]
 	head = show --oneline -s HEAD
 	oneline = log --pretty='%C(cyan)%ad %C(yellow)%h %C(cyan)%d %Creset%s %C(red)%aN' --date-order --graph --date=short
