@@ -51,8 +51,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
         bufmap({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", "LSP formatter")
         bufmap("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", "Select an LSP code action")
         bufmap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>", "Open LSP diagnostic")
-        bufmap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<cr>", "Go to previous LSP diagnostic")
-        bufmap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<cr>", "Go to next LSP diagnostic")
+        bufmap(
+            "n",
+            "[d",
+            "<cmd>lua vim.diagnostic.jump({ count = -1, float = true })<cr>",
+            "Go to previous LSP diagnostic"
+        )
+        bufmap("n", "]d", "<cmd>lua vim.diagnostic.jump({ count = 1, float = true })<cr>", "Go to next LSP diagnostic")
     end,
 })
 
@@ -90,7 +95,7 @@ vim.api.nvim_set_keymap(
 vim.api.nvim_set_keymap(
     "n",
     "<Leader>n",
-    ":lua vim.diagnostic.goto_next()<CR>",
+    ":lua vim.diagnostic.jump({ count = 1, float = true })<CR>",
     { desc = "Go to next LSP diagnostic", noremap = true, silent = true }
 )
 -- Go to prev diagnostic (if there are multiple on the same line, only shows
@@ -98,7 +103,7 @@ vim.api.nvim_set_keymap(
 vim.api.nvim_set_keymap(
     "n",
     "<Leader>p",
-    ":lua vim.diagnostic.goto_prev()<CR>",
+    ":lua vim.diagnostic.jump({ count = -1, float = true })<CR>",
     { desc = "Go to previous diagnostic", noremap = true, silent = true }
 )
 

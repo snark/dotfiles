@@ -16,7 +16,7 @@
 # asynchronous plugin loading. Pure and Purer [1] may also be useful examples
 # of how to get asynchronous behavior going (via zsh-async [2]) without
 # requiring a framework.
-# 
+#
 # 1. <https://github.com/dfurnes/purer>
 # 2. <https://github.com/mafredri/zsh-async>
 #
@@ -66,6 +66,7 @@ RPROMPT='%F{blue}%v%f'
 HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 setopt histignorespace # ignore anything starting with a space, e.g. " ls"
 setopt histignoredups # ignore direct repeats
+setopt histreduceblanks # remove superfluous blanks from each item
 # save history after every command (but do not read it after every
 # command, preventing polluting between shells; for that we'd use
 # share_history
@@ -74,12 +75,21 @@ setopt inc_append_history
 HISTSIZE=2000
 SAVEHIST=1000
 export HISTORY_IGNORE="(fg|ls|lr|pwd|exit)"
+# There's some zshaddhistory trickery to experiment with at
+# https://unix.stackexchange.com/questions/562722/ignore-history-when-using-zsh
+# and
+# https://scarff.id.au/blog/2019/zsh-history-conditional-on-command-success/
+#
+# zshaddhistory() {
+#   [[ ${1%%[[:space:]]##} == '' ]] && return 1
+#   return 0
+# }
 
 ## MISE
 # Mise is a polyglot manager for npm/pyenv-style shims, replacing a number of
 # separate managers (including direnv). We leave this out of .zprofile because
-# it's explicitly for interactive shell use. Note that this adds something like 
-# 50ms of prompt delay. See 
+# it's explicitly for interactive shell use. Note that this adds something like
+# 50ms of prompt delay. See
 # <https://mise.jdx.dev/faq.html#what-does-mise-activate-do>.
 #
 # Per recommendations, we're not going to leave this and direnv running at the
@@ -236,7 +246,7 @@ fi
 # Tere is like a very lightweight ranger/yazi/nnn, solely for file browsing
 # and directory traversal (rahter than any file management components).
 tere() {
-    if 
+    if
     local result=$(command tere -m esc:NotSearching:ExitWithoutCd,space:NotSearching:Exit "$@")
     [ -n "$result" ] && cd -- "$result"
 }
