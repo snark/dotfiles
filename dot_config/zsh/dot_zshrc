@@ -66,7 +66,6 @@ RPROMPT='%F{blue}%v%f'
 HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 setopt histignorespace # ignore anything starting with a space, e.g. " ls"
 setopt histignoredups # ignore direct repeats
-setopt histreduceblanks # remove superfluous blanks from each item
 # save history after every command (but do not read it after every
 # command, preventing polluting between shells; for that we'd use
 # share_history
@@ -75,15 +74,16 @@ setopt inc_append_history
 HISTSIZE=2000
 SAVEHIST=1000
 export HISTORY_IGNORE="(fg|ls|lr|pwd|exit)"
+# Bracketed paste strips all trailing linebreaks, specifically so the blank lines
+# don't end up in our internal history.
+bracketed-paste() {
+   zle .$WIDGET && LBUFFER=${(MS)LBUFFER##[[:graph:]]*[[:graph:]]}
+}
+zle -N bracketed-paste
 # There's some zshaddhistory trickery to experiment with at
 # https://unix.stackexchange.com/questions/562722/ignore-history-when-using-zsh
 # and
 # https://scarff.id.au/blog/2019/zsh-history-conditional-on-command-success/
-#
-# zshaddhistory() {
-#   [[ ${1%%[[:space:]]##} == '' ]] && return 1
-#   return 0
-# }
 
 ## MISE
 # Mise is a polyglot manager for npm/pyenv-style shims, replacing a number of
